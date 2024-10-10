@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     private InputAction _lightShootAction;
     private InputAction _heavyShootAction;
 
+    private Weapon _weapon;
+
     private CharacterController _characterController;
     private Vector3 _velocity;
     private Vector3 _animValue;
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-      
+        _weapon=FindAnyObjectByType<Weapon>();
 
         if (_playerInput == null)
         {
@@ -31,7 +33,8 @@ public class PlayerController : MonoBehaviour
         }
 
         _moveAction = _playerInput.MovingActions.Movement; 
-        _lightShootAction = _playerInput.ShootingActions.PrimaryShoot; 
+        _lightShootAction = _playerInput.ShootingActions.PrimaryShoot;
+        _heavyShootAction = _playerInput.ShootingActions.SecondaryShoot;
     }
 
     private void OnEnable()
@@ -48,7 +51,8 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleAiming();
-        HandleShooting();
+        HandleRegularShooting();
+        HandleMissilShooting();
     }
 
     private void HandleMovement()
@@ -63,14 +67,14 @@ public class PlayerController : MonoBehaviour
 
         _characterController.Move(_velocity * Time.deltaTime);
 
-       // moveDirection = transform.TransformDirection(moveDirection).normalized;
+      
 
         Vector3 setAnim = transform.TransformDirection(moveDirection).normalized;
 
         _animator.SetFloat("Horizontal", setAnim.x);
         _animator.SetFloat("Vertical", setAnim.z);
 
-        Debug.Log(setAnim);
+        //Debug.Log(setAnim);
     }
     private void HandleAiming()
     {
@@ -100,15 +104,28 @@ public class PlayerController : MonoBehaviour
 
         Debug.DrawRay(pointRay.origin, pointRay.direction * 100f, Color.red);
     }
-    private void HandleShooting()
+    private void HandleRegularShooting()
     {
         if (_lightShootAction.IsPressed())
         {
             _animator.SetLayerWeight(1, 1);
+            _weapon.Shoot();
         }
         else
         {
             _animator.SetLayerWeight(1, 0);
+        }
+    }
+
+    private void HandleMissilShooting()
+    {
+        if (_heavyShootAction.IsPressed())
+        {
+            _animator.SetLayerWeight(2, 1);
+        }
+        else
+        {
+            _animator.SetLayerWeight(2, 0);
         }
     }
 
