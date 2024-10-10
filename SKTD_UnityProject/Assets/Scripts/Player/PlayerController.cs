@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
 
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 10f; // La distancia desde la cámara al plano del juego
+        mousePos.z = 10f; 
 
         Vector3 worldMousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
