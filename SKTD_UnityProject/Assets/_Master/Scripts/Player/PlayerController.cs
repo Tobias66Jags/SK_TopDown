@@ -10,7 +10,10 @@ public class PlayerController : MonoBehaviour
     private InputAction _lightShootAction;
     private InputAction _heavyShootAction;
 
-    private Weapon _weapon;
+    private RayCastWeapon _weapon;
+    private PooledWeapon _pooledWeapon;
+
+    [SerializeField] private Transform _shootPosition;
 
     private CharacterController _characterController;
     private Vector3 _velocity;
@@ -25,7 +28,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _weapon=FindAnyObjectByType<Weapon>();
+        _weapon=GetComponentInChildren<RayCastWeapon>();
+        _pooledWeapon = GetComponentInChildren<PooledWeapon>(); 
 
         if (_playerInput == null)
         {
@@ -119,9 +123,10 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMissilShooting()
     {
-        if (_heavyShootAction.IsPressed())
+        if (_heavyShootAction.triggered)
         {
             _animator.SetLayerWeight(2, 1);
+            _pooledWeapon.ShootProjectile(_shootPosition);
         }
         else
         {
