@@ -32,10 +32,14 @@ public class HUDManager : MonoBehaviour
     [Header("Score Values")]
     [SerializeField] private TextMeshProUGUI _scoreCounter;
 
+    [Header("Round Value")]
+    [SerializeField] private TextMeshProUGUI _roundCounter;
+
     [Header("Store Values")]
     [SerializeField] GameObject _storePanel;
     [SerializeField] private string _storePanelInAnim = "PanelStoreIn";
     [SerializeField] private string _storePanelOutAnim = "PanelStoreOut";
+    [SerializeField] private Button _closeStoreButton;
 
     [Header("Enemies Values")]
     [SerializeField] private TextMeshProUGUI _enemiesCounter;
@@ -45,6 +49,7 @@ public class HUDManager : MonoBehaviour
     [SerializeField] private string _gameOverPanelAnim = "PanelGameOverIn";
     [SerializeField] private Button _retryButton;
     [SerializeField] private Button _menuButton;
+    [SerializeField] private TextMeshProUGUI _finalScore;
 
     private void Awake()
     {
@@ -64,6 +69,9 @@ public class HUDManager : MonoBehaviour
         _economyManager.OnMoneyChanged += UpdateMoneyCounter;
         _enemySpawnManager.OnEnemyChanged += UpdateEnemiesCounter;
         _scoreManager.OnScoreChanged += UpdateScoreCounter;
+        GameManager.Instance.OnRoundChanged += UpdateRoundCounter;
+        GameManager.Instance.OnRoundFinished += StoreIn;
+
     }
 
     private void OnDisable()
@@ -74,18 +82,18 @@ public class HUDManager : MonoBehaviour
         _economyManager.OnMoneyChanged -= UpdateMoneyCounter;
         _enemySpawnManager.OnEnemyChanged -= UpdateEnemiesCounter;
         _scoreManager.OnScoreChanged -= UpdateScoreCounter;
-
+        GameManager.Instance.OnRoundChanged -= UpdateRoundCounter;
+        GameManager.Instance.OnRoundFinished -= StoreIn;
     }
 
     private void Start()
     {
-        SetMissileValue();
-        SetHealthValues();
         UpdateMoneyCounter(_economyManager.currentMoney);
         SetStoreButtons();
         SetGameOverButtons();
+        UpdateScoreCounter(_scoreManager.score);
+        UpdateRoundCounter();
         UpdateEnemiesCounter(_enemySpawnManager.enemiesRemain);
-        UpdateScoreCounter(_scoreManager.score);    
     }
 
     public void SetHealthValues()
@@ -118,6 +126,11 @@ public class HUDManager : MonoBehaviour
         _scoreCounter.text = "Score:" + newScore.ToString();
     }
 
+    public void UpdateRoundCounter()
+    {
+        _roundCounter.text = "Round:"+GameManager.Instance.roundCounter.ToString();
+    }
+
     [ContextMenu("Store In")]
     public void StoreIn()
     {
@@ -133,17 +146,22 @@ public class HUDManager : MonoBehaviour
     {
         _retryButton.onClick.AddListener(() =>{ SceneFlowManager.Instance.LoadLevel("SampleScene"); });
         _menuButton.onClick.AddListener(() =>{ SceneFlowManager.Instance.LoadLevel("MainMenu"); });
+        _retryButton.onClick.AddListener(GameManager.Instance.ResetRounds);
+        _menuButton.onClick.AddListener(GameManager.Instance.ResetRounds);
     }
     public void GameOverIn()
     {
         _gameOverPanel.GetComponent<Animator>().Play(_gameOverPanelAnim);
-
+        _finalScore.text = "Score:" + _scoreManager.score.ToString(); 
     }
 
  
 
     public void SetStoreButtons()
     {
+        _closeStoreButton.onClick.AddListener(StoreOut);
+        _closeStoreButton.onClick.AddListener(GameManager.Instance.IncreaseRound);
+        _closeStoreButton.onClick.AddListener(GameManager.Instance.ResetGame);
         foreach (var button in _storeButtons)
         {
             for (int i = 0; i < _storeManager.StoreEvents.Length; i++)

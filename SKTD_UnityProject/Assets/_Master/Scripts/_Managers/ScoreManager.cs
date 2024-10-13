@@ -18,7 +18,7 @@ public class ScoreManager : MonoBehaviour
     }
 
    
-
+   
 
     public void BeatEnemyScore()
     {

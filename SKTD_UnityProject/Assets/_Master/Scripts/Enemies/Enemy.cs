@@ -171,7 +171,7 @@ public class Enemy : MonoBehaviour, IDamageable
             {
              _canSpawn = false;
              float rand = Random.value;
-            Debug.Log(rand);
+        
           if (rand > 0.7)
             {
                 

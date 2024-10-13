@@ -20,6 +20,10 @@ public class PooledWeapon : MonoBehaviour
         currentAmmo = maxAmmo;
     }
 
+    private void Start()
+    {
+        CallAmmoEvent();
+    }
 
     public void ShootMissile(Transform spawnPos)
     {

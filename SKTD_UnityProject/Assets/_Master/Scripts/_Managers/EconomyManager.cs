@@ -28,6 +28,10 @@ public class EconomyManager : MonoBehaviour
         _storeManager.OnPurchased -= MakePurchase;
     }
 
+    private void Start()
+    {
+        OnMoneyChanged?.Invoke(currentMoney);
+    }
 
     public void MakePurchase(int cost)
     {

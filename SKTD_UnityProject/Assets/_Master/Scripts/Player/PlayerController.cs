@@ -77,6 +77,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         _playerInput.Disable();
         OnDeath -= GameManager.Instance.GameOver;
     }
+    private void Start()
+    {
+        OnHealthUpdated?.Invoke();
+    }
 
     private void Update()
     {
