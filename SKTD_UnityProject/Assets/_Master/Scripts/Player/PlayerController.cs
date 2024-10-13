@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private RayCastWeapon _weapon;
     private PooledWeapon _pooledWeapon;
+    private EconomyManager _economyManager;
 
     [SerializeField] private Transform _shootPosition;
 
@@ -50,6 +51,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         _characterController = GetComponent<CharacterController>();
         _weapon = GetComponentInChildren<RayCastWeapon>();
         _pooledWeapon = GetComponentInChildren<PooledWeapon>();
+        _economyManager = FindAnyObjectByType<EconomyManager>();
 
         if (_playerInput == null)
         {
@@ -221,5 +223,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         isRegenerating = false; 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            _economyManager.MakeRefund(1);
+            other.gameObject.SetActive(false);
+        }
     }
 }

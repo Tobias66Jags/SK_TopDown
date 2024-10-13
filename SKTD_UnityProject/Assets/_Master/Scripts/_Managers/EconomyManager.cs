@@ -9,8 +9,7 @@ public class EconomyManager : MonoBehaviour
     [SerializeField] private int initialMoney = 100;
     public int currentMoney;
 
-   /* private TowersManager _towersManager;
-    private EnemySpawnManager _enemiesManager;*/
+ 
 
     public delegate void MoneyChanged(int newAmount);
     public event MoneyChanged OnMoneyChanged;

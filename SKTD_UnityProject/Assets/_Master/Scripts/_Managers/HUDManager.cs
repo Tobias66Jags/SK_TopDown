@@ -12,6 +12,8 @@ public class HUDManager : MonoBehaviour
     PlayerController _playerController;
     EconomyManager _economyManager;
     StoreManager _storeManager;
+    EnemySpawnManager _enemySpawnManager;
+    ScoreManager _scoreManager;
 
     [Header("Store Buttons")]
     [SerializeField] StoreButtonsStruct[] _storeButtons;
@@ -27,10 +29,16 @@ public class HUDManager : MonoBehaviour
     [Header("Coin Values")]
     [SerializeField] private TextMeshProUGUI _coinCounter;
 
+    [Header("Score Values")]
+    [SerializeField] private TextMeshProUGUI _scoreCounter;
+
     [Header("Store Values")]
     [SerializeField] GameObject _storePanel;
     [SerializeField] private string _storePanelInAnim = "PanelStoreIn";
     [SerializeField] private string _storePanelOutAnim = "PanelStoreOut";
+
+    [Header("Enemies Values")]
+    [SerializeField] private TextMeshProUGUI _enemiesCounter;
 
     [Header("Game Over Values")]
     [SerializeField] private GameObject _gameOverPanel;
@@ -40,10 +48,12 @@ public class HUDManager : MonoBehaviour
 
     private void Awake()
     {
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
         _storeManager = FindAnyObjectByType<StoreManager>();
         _pooledWeapon = FindAnyObjectByType<PlayerController>().GetComponentInChildren<PooledWeapon>();
         _playerController = FindAnyObjectByType<PlayerController>();
         _economyManager = FindAnyObjectByType<EconomyManager>();
+        _enemySpawnManager = FindAnyObjectByType<EnemySpawnManager>();
     }
 
     private void OnEnable()
@@ -52,7 +62,8 @@ public class HUDManager : MonoBehaviour
         _playerController.OnHealthUpdated += SetHealthValues;
         _playerController.OnDeath += GameOverIn;
         _economyManager.OnMoneyChanged += UpdateMoneyCounter;
-        
+        _enemySpawnManager.OnEnemyChanged += UpdateEnemiesCounter;
+        _scoreManager.OnScoreChanged += UpdateScoreCounter;
     }
 
     private void OnDisable()
@@ -61,7 +72,8 @@ public class HUDManager : MonoBehaviour
         _playerController.OnHealthUpdated -= SetHealthValues;
         _playerController.OnDeath -= GameOverIn;
         _economyManager.OnMoneyChanged -= UpdateMoneyCounter;
-
+        _enemySpawnManager.OnEnemyChanged -= UpdateEnemiesCounter;
+        _scoreManager.OnScoreChanged -= UpdateScoreCounter;
 
     }
 
@@ -72,6 +84,8 @@ public class HUDManager : MonoBehaviour
         UpdateMoneyCounter(_economyManager.currentMoney);
         SetStoreButtons();
         SetGameOverButtons();
+        UpdateEnemiesCounter(_enemySpawnManager.enemiesRemain);
+        UpdateScoreCounter(_scoreManager.score);    
     }
 
     public void SetHealthValues()
@@ -92,6 +106,16 @@ public class HUDManager : MonoBehaviour
     private void UpdateMoneyCounter(int newAmount)
     {
         _coinCounter.text = "x"  + newAmount.ToString();
+    }
+
+    public void UpdateEnemiesCounter(int newAmount)
+    {
+        _enemiesCounter.text = "Enemies:"+ newAmount.ToString();
+    }
+
+    public void UpdateScoreCounter(int newScore)
+    {
+        _scoreCounter.text = "Score:" + newScore.ToString();
     }
 
     [ContextMenu("Store In")]
@@ -115,6 +139,8 @@ public class HUDManager : MonoBehaviour
         _gameOverPanel.GetComponent<Animator>().Play(_gameOverPanelAnim);
 
     }
+
+ 
 
     public void SetStoreButtons()
     {
