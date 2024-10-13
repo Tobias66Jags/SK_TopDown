@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public GameObject player;
+
+    PlayerController _playerController;
 
     public bool isPlay = false;
 
@@ -15,17 +18,34 @@ public class GameManager : MonoBehaviour
         #region Singleton
         if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject); 
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject); 
         }
         #endregion
 
     }
 
+    private void OnEnable()
+    {
+        
+    }
 
+    private void OnDisable()
+    {
+
+    }
+
+
+
+    public void GameOver()
+    {
+        isPlay = false;
+    }
 }
+
+
 

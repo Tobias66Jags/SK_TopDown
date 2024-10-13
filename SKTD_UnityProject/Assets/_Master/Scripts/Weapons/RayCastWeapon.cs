@@ -42,9 +42,9 @@ public class RayCastWeapon : MonoBehaviour
             if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _attackDistance))
             {
                 Debug.DrawRay(transform.position + _offset, direction * _attackDistance, Color.red, 2f);
-                Debug.Log(hit.transform.name);
+               // Debug.Log(hit.transform.name);
 
-                 hit.collider.GetComponent<IDamageable>()?.GetDamage(null, _damage);
+                 hit.collider.GetComponent<IDamageable>()?.GetDamage(_damage);
                 _hitEffect.transform.position = hit.point;
                 _hitEffect.Play();
             }

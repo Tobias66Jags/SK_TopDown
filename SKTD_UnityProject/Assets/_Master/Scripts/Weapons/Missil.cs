@@ -35,14 +35,14 @@ public class Missil : MonoBehaviour
 
         foreach (Collider nearbyObject in colliders)
         {
-            // Añadir fuerza explosiva a los objetos que tengan Rigidbody
+           
             Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            Debug.Log(nearbyObject.gameObject.name);  
+            //Debug.Log(nearbyObject.gameObject.name);  
             if (rb != null)
             {
                 rb.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
             }
-            if(nearbyObject.gameObject.name != "Player") nearbyObject.GetComponent<IDamageable>()?.GetDamage(null, _damage);
+            if(nearbyObject.gameObject.name != "Player") nearbyObject.GetComponent<IDamageable>()?.GetDamage( _damage);
 
         }
        

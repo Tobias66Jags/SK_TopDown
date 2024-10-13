@@ -33,14 +33,14 @@ public class PoolManager : MonoBehaviour
 
     public GameObject GetMissile()
     {
-        return GetPooledProjectile(_missiles);
+        return GetPooledObject(_missiles);
     }
     public GameObject GetEnemyProjectile() 
     {
-        return GetPooledProjectile(_eProjectiles);   
+        return GetPooledObject(_eProjectiles);   
     }
 
-    public GameObject GetPooledProjectile (List<GameObject> list)
+    public GameObject GetPooledObject (List<GameObject> list)
     {
         for (int i = 0; i < list.Count; i++)
         {

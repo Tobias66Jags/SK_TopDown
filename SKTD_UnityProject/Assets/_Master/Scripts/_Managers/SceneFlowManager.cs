@@ -84,7 +84,7 @@ public class SceneFlowManager : MonoBehaviour
             case 0:
                 break;
             case 1:
-                Debug.Log("funciona el evento de escenas");
+               
                 
                 break;
             case 3:
@@ -98,4 +98,6 @@ public class SceneFlowManager : MonoBehaviour
                 break;
         }
     }
+
+  
 }

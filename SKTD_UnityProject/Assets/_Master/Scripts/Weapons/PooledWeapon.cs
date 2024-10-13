@@ -5,31 +5,45 @@ using UnityEngine;
 public class PooledWeapon : MonoBehaviour
 {
     PoolManager _poolManager;
-
-    [SerializeField] private float _projectileForce = 10f;
+    private bool _canShoot = true;
+    [SerializeField] private float _coolDown = 2;
 
     public int maxAmmo = 3;
-    private int _currentAmmo;
+    public int currentAmmo;
 
+    public delegate void AmmoEventChanging();
+    public event AmmoEventChanging OnAmmoChanging;
 
     private void Awake()
     {
         _poolManager = FindAnyObjectByType<PoolManager>();
+        currentAmmo = maxAmmo;
     }
 
-    private void Start()
+
+    public void ShootMissile(Transform spawnPos)
     {
-        _currentAmmo = maxAmmo; 
+        if (_canShoot && currentAmmo != 0)
+        {
+            _canShoot = false;
+            currentAmmo--;
+            GameObject projectile = _poolManager.GetMissile();
+            projectile.transform.position = spawnPos.position;
+            projectile.transform.rotation = spawnPos.rotation;
+            projectile.SetActive(true);
+            CallAmmoEvent();
+            Invoke("Cooling", _coolDown);
+        }
+
     }
 
-    public void ShootProjectile(Transform spawnPos)
+    public void Cooling()
     {
-       GameObject projectile =  _poolManager.GetMissile();
-       projectile.transform.position = spawnPos.position;
-       projectile.transform.rotation = spawnPos.rotation;
-        projectile.SetActive(true); 
+        _canShoot = true;
     }
 
-
-    
+    public void CallAmmoEvent()
+    {
+        if (OnAmmoChanging != null) OnAmmoChanging();
+    }
 }
