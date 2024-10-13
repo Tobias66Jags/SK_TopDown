@@ -57,6 +57,7 @@ public class Missil : MonoBehaviour
     {
         if (other)
         {
+            AudioManager.Instance.PlaySound("MissileImpact");
             Explode();
             Invoke("Deactivate", _delay);
         }

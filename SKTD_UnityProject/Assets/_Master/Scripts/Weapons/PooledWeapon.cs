@@ -35,6 +35,7 @@ public class PooledWeapon : MonoBehaviour
             projectile.transform.position = spawnPos.position;
             projectile.transform.rotation = spawnPos.rotation;
             projectile.SetActive(true);
+            AudioManager.Instance.PlaySound("Missile");
             CallAmmoEvent();
             Invoke("Cooling", _coolDown);
         }

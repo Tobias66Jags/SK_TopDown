@@ -74,25 +74,28 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        switch (currentState)
+        if (GameManager.Instance.isPlay)
         {
-            case EnemyStates.Moving:
+            switch (currentState)
+            {
+                case EnemyStates.Moving:
 
-                Move();
-                if (IsAttacking(_distanceToShoot)) currentState = EnemyStates.Attacking;
-                break;
-            case EnemyStates.Attacking:
-                Attack();
-               if (!IsAttacking(_distanceToFollow)) currentState = EnemyStates.Moving;
+                    Move();
+                    if (IsAttacking(_distanceToShoot)) currentState = EnemyStates.Attacking;
+                    break;
+                case EnemyStates.Attacking:
+                    Attack();
+                    if (!IsAttacking(_distanceToFollow)) currentState = EnemyStates.Moving;
 
-                break;
-              
-               
-            case EnemyStates.Dying:
-                Die();
-                break;
+                    break;
 
-            default: break;
+
+                case EnemyStates.Dying:
+                    Die();
+                    break;
+
+                default: break;
+            }
         }
     }
 
@@ -109,7 +112,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (_canShoot )
         {
             _canShoot = false;
-           
+            AudioManager.Instance.PlaySound("EnemyBullet");
             GameObject projectile = _poolManager.GetEnemyProjectile();
             projectile.transform.position = _bulletPos.position;
             projectile.transform.rotation = _bulletPos.rotation;
@@ -132,11 +135,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Deactivate()
     {
-      
-        InitializeEnemy();
-        OnEnemyDeath?.Invoke();
-        OnEnemyGetScore?.Invoke();
-        gameObject.SetActive(false);
+        if (currentState == EnemyStates.Dying)
+        {
+            InitializeEnemy();
+            OnEnemyDeath?.Invoke();
+            OnEnemyGetScore?.Invoke();
+            gameObject.SetActive(false);
+        }
     }
     public void LookPlayer()
     {
@@ -145,8 +150,11 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     public void GetDamage(int damageValue)
     {
-        _currentHealth -=damageValue;
-        if (_currentHealth <= 0) currentState = EnemyStates.Dying;
+        _currentHealth -= damageValue;
+        if (_currentHealth <= 0 && currentState != EnemyStates.Dying)
+        {
+            currentState = EnemyStates.Dying;
+        }
 
     }
 

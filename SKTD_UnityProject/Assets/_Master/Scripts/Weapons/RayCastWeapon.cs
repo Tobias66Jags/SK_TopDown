@@ -11,7 +11,7 @@ public class RayCastWeapon : MonoBehaviour
     [Header("Attack Values")]
     [SerializeField] private Vector3 _offset;
     [SerializeField] private float _attackDistance;
-    [SerializeField] private int _damage;
+    public int _damage;
     [SerializeField] private float _forceMultiplier;
     [SerializeField] private float _fireRate = 0.5f;
 
@@ -33,7 +33,7 @@ public class RayCastWeapon : MonoBehaviour
             _canShoot = false;
 
             _muzzleFlash?.Play();
-
+            AudioManager.Instance.PlaySound("Bullet");
             //EventManager.TriggerEvent(_hitEventName, property: _hitSoundName);
 
 
@@ -42,8 +42,8 @@ public class RayCastWeapon : MonoBehaviour
             if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _attackDistance))
             {
                 Debug.DrawRay(transform.position + _offset, direction * _attackDistance, Color.red, 2f);
-               // Debug.Log(hit.transform.name);
-
+                // Debug.Log(hit.transform.name);
+              
                  hit.collider.GetComponent<IDamageable>()?.GetDamage(_damage);
                 _hitEffect.transform.position = hit.point;
                 _hitEffect.Play();

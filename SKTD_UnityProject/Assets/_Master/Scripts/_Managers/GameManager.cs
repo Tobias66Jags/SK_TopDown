@@ -47,12 +47,19 @@ public class GameManager : MonoBehaviour
     public void IncreaseRound()
     {
         roundCounter++;
+        if (roundCounter % 3 == 0)
+        {
+            RayCastWeapon weapon = FindAnyObjectByType<RayCastWeapon>();
+            weapon._damage = Mathf.Max(4, weapon._damage - 1);
+        }
+
         OnRoundChanged?.Invoke();
     }
 
     public void FinishRound()
     {
         isPlay = false;
+        AudioManager.Instance.PlaySound("EndRound");
         OnRoundFinished?.Invoke();
     }
 

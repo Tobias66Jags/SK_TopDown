@@ -94,7 +94,8 @@ public class EnemySpawnManager : MonoBehaviour
         enemiesRemain--;
         OnEnemyChanged?.Invoke(enemiesRemain);
         if (enemiesRemain <= 0)
-        {          
+        {
+            AudioManager.Instance.PlaySound("FinishRound");
             GameManager.Instance.Invoke("FinishRound",5);
         }
     }

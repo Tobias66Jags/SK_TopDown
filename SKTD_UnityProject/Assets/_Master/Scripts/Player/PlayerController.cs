@@ -39,7 +39,10 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     [Header("Anim Settings")]
     [SerializeField] private Animator _animator;
+    private float _stepTimer = 0f;
+    [SerializeField] float stepInterval = 1f / 6f;
 
+    [Header("Shield Settings")]
     public int shieldRegenerationRate = 10; 
     public float shieldRegenerationInterval = 0.5f; 
     public float timeToStartRegeneration = 5f; 
@@ -120,6 +123,23 @@ public class PlayerController : MonoBehaviour, IDamageable
         Vector3 setAnim = transform.TransformDirection(moveDirection).normalized;
         _animator.SetFloat("Horizontal", setAnim.x);
         _animator.SetFloat("Vertical", setAnim.z);
+
+        if (moveDirection.magnitude > 0)
+        {
+            _stepTimer += Time.deltaTime;
+
+           
+            if (_stepTimer >= stepInterval)
+            {
+                PlayStep(); 
+                _stepTimer = 0f;
+            }
+        }
+        else
+        {
+           
+            _stepTimer = 0f;
+        }
     }
 
     private void HandleAiming()
@@ -141,6 +161,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             Quaternion rotateToMouse = Quaternion.LookRotation(mouseDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotateToMouse, _turnSmoothTime);
         }
+
+
 
         Debug.DrawRay(pointRay.origin, pointRay.direction * 100f, Color.red);
     }
@@ -179,8 +201,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void GetDamage(int damageAmount)
     {
-      
-        
+
+        AudioManager.Instance.PlaySound("Grunt");
         if (currentShield > 0)
         {
             currentShield -= damageAmount*2;
@@ -219,8 +241,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         while (currentShield < maxShield)
         {
             currentShield += shieldRegenerationRate;
-            currentShield = Mathf.Min(currentShield, maxShield); 
-
+            currentShield = Mathf.Min(currentShield, maxShield);
+            AudioManager.Instance.PlaySound("Shield");
             CallHealthUpdate();
 
             yield return new WaitForSecondsRealtime(shieldRegenerationInterval); 
@@ -234,7 +256,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (other.CompareTag("Coin"))
         {
             _economyManager.MakeRefund(1);
+            AudioManager.Instance.PlaySound("Coin");
             other.gameObject.SetActive(false);
         }
+    }
+
+    public void PlayStep()
+    {
+
+    
+        AudioManager.Instance.PlaySound("Step");
     }
 }
