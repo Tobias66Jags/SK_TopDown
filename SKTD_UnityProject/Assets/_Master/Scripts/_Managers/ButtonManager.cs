@@ -10,5 +10,6 @@ public class ButtonManager : MonoBehaviour
     private void Start()
     {
         _playButton.onClick.AddListener(() => { SceneFlowManager.Instance.LoadLevel("SampleScene"); });
+        _playButton.onClick.AddListener(GameManager.Instance.ResetGame);
     }
 }

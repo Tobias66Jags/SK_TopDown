@@ -147,6 +147,7 @@ public class HUDManager : MonoBehaviour
         _retryButton.onClick.AddListener(() =>{ SceneFlowManager.Instance.LoadLevel("SampleScene"); });
         _menuButton.onClick.AddListener(() =>{ SceneFlowManager.Instance.LoadLevel("MainMenu"); });
         _retryButton.onClick.AddListener(GameManager.Instance.ResetRounds);
+        _retryButton.onClick.AddListener(GameManager.Instance.ResetGame);
         _menuButton.onClick.AddListener(GameManager.Instance.ResetRounds);
     }
     public void GameOverIn()
